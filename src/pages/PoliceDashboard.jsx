@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import policeLogo from "../assets/police_logo.png";
@@ -7,6 +9,7 @@ import api from "../api";
 export default function PoliceDashboard() {
   const officer = JSON.parse(localStorage.getItem("officer"));
   const token = localStorage.getItem("jwt");
+  const navigate = useNavigate();
 
   const [selectedDate, setSelectedDate] = useState(new Date());
   // --- MERGED: State for backend events/schedules
@@ -526,6 +529,23 @@ export default function PoliceDashboard() {
               >
                 Save Update
               </button>
+              <button
+                onClick={() => navigate(`/cases/recommend/${activeCase.caseNum}`)}
+                style={{
+                  background: "#FFD85A",
+                  color: "black",
+                  border: "none",
+                  padding: "10px 15px",
+                  borderRadius: "8px",
+                  fontWeight: "600",
+                  cursor: "pointer",
+                  marginTop: "15px",
+                }}
+              >
+  View Related Cases
+</button>
+
+              
             </div>
           )}
 

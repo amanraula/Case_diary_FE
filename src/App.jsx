@@ -5,6 +5,7 @@ import CitizenLogin from "./pages/CitizenLogin";
 import PoliceDashboard from "./pages/PoliceDashboard";
 import CitizenDashboard from "./pages/CitizenDashboard";
 import TwoFactorSetup from "./pages/TwoFactorSetup";
+import CaseRecommendations from "./pages/CaseRecommendations";
 import TwoFactorLogin from "./pages/TwoFactorLogin";
 function App() {
   return (
@@ -18,6 +19,8 @@ function App() {
         <Route path="/citizen-dashboard" element={<CitizenDashboard />} />
         <Route path="/2fa-setup" element={<TwoFactorSetup />} />
         <Route path="/2fa-login" element={<TwoFactorLogin />} />
+        <Route path="/cases/recommend/:caseNum" element={<CaseRecommendations />} />
+
       </Routes>
     </BrowserRouter>
   );
