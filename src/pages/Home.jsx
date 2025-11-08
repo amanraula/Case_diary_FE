@@ -1,173 +1,306 @@
-import Header from "../components/Header";
-import Footer from "../components/Footer";
-import policeIcon from "../assets/police_icon.png";
-import citizenIcon from "../assets/citizen_icon.png";
-import policeLogo from "../assets/police_logo.png";
-import { useNavigate } from "react-router-dom";
+"use client"
+
+import { useState, useEffect } from "react"
+import { useNavigate } from "react-router-dom"
+import "./globals.css"
+import Header from "../components/Header"
+import Footer from "../components/Footer"
 
 export default function Home() {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
+  const [isLoaded, setIsLoaded] = useState(false)
+
+  useEffect(() => {
+    setIsLoaded(true)
+  }, [])
 
   return (
     <div
       style={{
-        backgroundColor: "#FFFFFF",
         minHeight: "100vh",
-        width: "100vw",
-        position: "relative",
-        overflowX: "hidden",
+        background: "linear-gradient(135deg, #0a0a0a 0%, #1a0033 50%, #0f0020 100%)",
         display: "flex",
         flexDirection: "column",
-        justifyContent: "space-between",
+        position: "relative",
+        overflow: "hidden",
       }}
     >
-      {/* Background Logo */}
+      {/* Background geometric shapes */}
       <div
         style={{
           position: "absolute",
-          inset: 0,
-          backgroundImage: `url(${policeLogo})`,
-          backgroundRepeat: "no-repeat",
-          backgroundPosition: "center",
-          backgroundSize: "340px",
-          opacity: 0.08,
-          zIndex: 0,
+          top: "10%",
+          left: "5%",
+          width: "200px",
+          height: "200px",
+          background: "radial-gradient(circle, rgba(100, 50, 255, 0.08), transparent)",
+          borderRadius: "50%",
+          pointerEvents: "none",
+        }}
+      />
+      <div
+        style={{
+          position: "absolute",
+          bottom: "15%",
+          right: "8%",
+          width: "300px",
+          height: "300px",
+          background: "radial-gradient(circle, rgba(100, 150, 255, 0.06), transparent)",
+          borderRadius: "50%",
+          pointerEvents: "none",
         }}
       />
 
-      {/* Header */}
       <Header />
 
-      {/* Main Section */}
+      {/* Main Hero Section */}
       <div
         style={{
+          flex: 1,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "40px 20px",
           position: "relative",
           zIndex: 1,
-          width: "100%",
-          maxWidth: "700px",
-          margin: "0 auto",
-          padding: "20px",
-          textAlign: "center",
         }}
       >
-        <h1
-          style={{
-            fontSize: "28px",
-            fontWeight: "700",
-            color: "#1A1A1A",
-            marginBottom: "25px",
-            marginTop: "20px",
-          }}
-        >
-          Choose Login Type
-        </h1>
-
-        {/* Side Buttons */}
         <div
           style={{
-            display: "flex",
-            justifyContent: "space-between",
-            gap: "20px",
-            width: "100%",
-            flexWrap: "wrap",
-            marginTop: "20px",
+            animation: isLoaded ? "slideInDown 0.8s ease-out" : "none",
+            marginBottom: "40px",
+            textAlign: "center",
           }}
         >
-          {/* Police Login */}
-          <button
-            onClick={() => navigate("/police-login")}
+          <h1
             style={{
-              flex: "1",
-              minWidth: "150px",
-              height: "140px",
-              backgroundColor: "#FFD85A",
-              color: "#1A1A1A",
-              border: "none",
-              borderRadius: "16px",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "12px",
-              fontSize: "18px",
-              fontWeight: "600",
-              cursor: "pointer",
+              fontSize: "48px",
+              fontWeight: "bold",
+              background: "linear-gradient(135deg, #64c8ff 0%, #6432ff 50%, #64c8ff 100%)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text",
+              marginBottom: "16px",
+              letterSpacing: "1px",
             }}
           >
-            <img src={policeIcon} alt="Police" style={{ width: "45px" }} />
-            Police Officer
-          </button>
-
-          {/* Citizen Login */}
-          <button
-            onClick={() => navigate("/citizen-login")}
+            SECURE ACCESS CONTROL
+          </h1>
+          <p
             style={{
-              flex: "1",
-              minWidth: "150px",
-              height: "140px",
-              backgroundColor: "#FF9E3D",
-              color: "#1A1A1A",
-              border: "none",
-              borderRadius: "16px",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "12px",
-              fontSize: "18px",
-              fontWeight: "600",
-              cursor: "pointer",
+              color: "#a0a0c0",
+              fontSize: "16px",
+              letterSpacing: "2px",
+              textTransform: "uppercase",
+              fontWeight: "500",
             }}
           >
-            <img src={citizenIcon} alt="Citizen" style={{ width: "45px" }} />
-            Citizen
-          </button>
+            Integrated Crime Reporting System
+          </p>
         </div>
 
-        {/* Achievements + Analytics */}
+        {/* Login Options */}
         <div
           style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+            gap: "24px",
             width: "100%",
+            maxWidth: "600px",
             marginTop: "40px",
+          }}
+        >
+          {/* Police Login Card */}
+          <div
+            onClick={() => navigate("/police-login")}
+            style={{
+              background: "linear-gradient(135deg, #1a0a3d 0%, #2d1a5c 50%, #1a0a3d 100%)",
+              border: "2px solid rgba(100, 50, 255, 0.4)",
+              borderRadius: "8px",
+              padding: "32px 24px",
+              cursor: "pointer",
+              transition: "all 0.3s ease",
+              animation: isLoaded ? "slideInLeft 0.8s ease-out 0.1s both" : "none",
+              position: "relative",
+              boxShadow: "0 8px 32px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1)",
+              textAlign: "center",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.boxShadow =
+                "0 0 30px rgba(100, 50, 255, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.2)"
+              e.currentTarget.style.borderColor = "rgba(100, 200, 255, 0.8)"
+              e.currentTarget.style.transform = "translateY(-4px)"
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.boxShadow = "0 8px 32px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1)"
+              e.currentTarget.style.borderColor = "rgba(100, 50, 255, 0.4)"
+              e.currentTarget.style.transform = "translateY(0)"
+            }}
+          >
+            <div
+              style={{
+                fontSize: "48px",
+                marginBottom: "12px",
+              }}
+            >
+              {"[']OFFICER{']"}
+            </div>
+            <h3
+              style={{
+                color: "#64c8ff",
+                fontSize: "18px",
+                fontWeight: "600",
+                letterSpacing: "1px",
+                textTransform: "uppercase",
+                marginBottom: "12px",
+              }}
+            >
+              Police Access
+            </h3>
+            <p
+              style={{
+                color: "#a0a0c0",
+                fontSize: "12px",
+                letterSpacing: "0.5px",
+              }}
+            >
+              Badge verification required
+            </p>
+          </div>
+
+          {/* Citizen Login Card */}
+          <div
+            onClick={() => navigate("/citizen-login")}
+            style={{
+              background: "linear-gradient(135deg, #1a0a3d 0%, #2d1a5c 50%, #1a0a3d 100%)",
+              border: "2px solid rgba(100, 50, 255, 0.4)",
+              borderRadius: "8px",
+              padding: "32px 24px",
+              cursor: "pointer",
+              transition: "all 0.3s ease",
+              animation: isLoaded ? "slideInRight 0.8s ease-out 0.2s both" : "none",
+              position: "relative",
+              boxShadow: "0 8px 32px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1)",
+              textAlign: "center",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.boxShadow =
+                "0 0 30px rgba(100, 50, 255, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.2)"
+              e.currentTarget.style.borderColor = "rgba(100, 200, 255, 0.8)"
+              e.currentTarget.style.transform = "translateY(-4px)"
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.boxShadow = "0 8px 32px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1)"
+              e.currentTarget.style.borderColor = "rgba(100, 50, 255, 0.4)"
+              e.currentTarget.style.transform = "translateY(0)"
+            }}
+          >
+            <div
+              style={{
+                fontSize: "48px",
+                marginBottom: "12px",
+              }}
+            >
+              {"["}CITIZEN{"]"}
+            </div>
+            <h3
+              style={{
+                color: "#64c8ff",
+                fontSize: "18px",
+                fontWeight: "600",
+                letterSpacing: "1px",
+                textTransform: "uppercase",
+                marginBottom: "12px",
+              }}
+            >
+              Public Access
+            </h3>
+            <p
+              style={{
+                color: "#a0a0c0",
+                fontSize: "12px",
+                letterSpacing: "0.5px",
+              }}
+            >
+              Phone verification required
+            </p>
+          </div>
+        </div>
+
+        {/* Bottom Info Section */}
+        <div
+          style={{
+            marginTop: "60px",
             display: "flex",
-            flexDirection: "column",
-            gap: "15px",
+            gap: "16px",
+            width: "100%",
+            maxWidth: "600px",
+            animation: isLoaded ? "slideInUp 0.8s ease-out 0.3s both" : "none",
           }}
         >
           <button
             onClick={() => navigate("/achievements")}
             style={{
-              padding: "16px",
-              backgroundColor: "#EFEFEF",
-              borderRadius: "12px",
-              border: "1px solid #DADADA",
-              fontSize: "18px",
-              fontWeight: "600",
+              flex: 1,
+              padding: "14px",
+              background: "rgba(100, 50, 255, 0.15)",
+              border: "1px solid rgba(100, 50, 255, 0.3)",
+              borderRadius: "4px",
+              color: "#a0a0c0",
               cursor: "pointer",
+              fontSize: "13px",
+              fontWeight: "600",
+              letterSpacing: "0.5px",
+              textTransform: "uppercase",
+              transition: "all 0.3s ease",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = "rgba(100, 50, 255, 0.3)"
+              e.currentTarget.style.borderColor = "rgba(100, 200, 255, 0.6)"
+              e.currentTarget.style.color = "#64c8ff"
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = "rgba(100, 50, 255, 0.15)"
+              e.currentTarget.style.borderColor = "rgba(100, 50, 255, 0.3)"
+              e.currentTarget.style.color = "#a0a0c0"
             }}
           >
-            Achievements
+            View Statistics
           </button>
-
           <button
             onClick={() => navigate("/analytics")}
             style={{
-              padding: "16px",
-              backgroundColor: "#EFEFEF",
-              borderRadius: "12px",
-              border: "1px solid #DADADA",
-              fontSize: "18px",
-              fontWeight: "600",
+              flex: 1,
+              padding: "14px",
+              background: "rgba(100, 50, 255, 0.15)",
+              border: "1px solid rgba(100, 50, 255, 0.3)",
+              borderRadius: "4px",
+              color: "#a0a0c0",
               cursor: "pointer",
+              fontSize: "13px",
+              fontWeight: "600",
+              letterSpacing: "0.5px",
+              textTransform: "uppercase",
+              transition: "all 0.3s ease",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = "rgba(100, 50, 255, 0.3)"
+              e.currentTarget.style.borderColor = "rgba(100, 200, 255, 0.6)"
+              e.currentTarget.style.color = "#64c8ff"
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = "rgba(100, 50, 255, 0.15)"
+              e.currentTarget.style.borderColor = "rgba(100, 50, 255, 0.3)"
+              e.currentTarget.style.color = "#a0a0c0"
             }}
           >
-            Analytics
+            Analytics Dashboard
           </button>
         </div>
       </div>
 
-      {/* Footer */}
       <Footer />
     </div>
-  );
+  )
 }
