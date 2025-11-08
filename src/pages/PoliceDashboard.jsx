@@ -9,8 +9,12 @@ export default function PoliceDashboard() {
   const token = localStorage.getItem("jwt");
 
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [events, setEvents] = useState({});
+  // --- MERGED: State for backend events/schedules
+  const [events, setEvents] = useState([]); // Use array for backend events
   const [newEvent, setNewEvent] = useState("");
+  const [privacy, setPrivacy] = useState("private"); // State for privacy from the second component
+  // --- END MERGED
+
   const [view, setView] = useState("cases");
   const [activeCase, setActiveCase] = useState(null);
   const [cases, setCases] = useState([]);
@@ -40,13 +44,60 @@ export default function PoliceDashboard() {
     if (token && officer) fetchCases();
   }, [token, officer]);
 
-  // ✅ Add local event
-  const handleAddEvent = () => {
-    const key = selectedDate.toDateString();
+  // --- MERGED: Load events from DB (Replaces local event state logic)
+  useEffect(() => {
+    const fetchSchedules = async () => {
+      try {
+        const res = await api.get("/schedules", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        // Sort the events to ensure consistency if needed, though not strictly required by the prompt
+        setEvents(res.data.data); 
+      } catch (err) {
+        console.error("Failed to load schedules:", err);
+      }
+    };
+
+    if (token) fetchSchedules();
+  }, [token]);
+  // --- END MERGED
+
+  // --- MERGED: Add new event to DB (Replaces local event addition)
+  const handleAddEvent = async () => {
     if (!newEvent.trim()) return;
-    setEvents({ ...events, [key]: [...(events[key] || []), newEvent] });
-    setNewEvent("");
+    try {
+      const res = await api.post(
+        "/schedules",
+        {
+          title: newEvent,
+          date: selectedDate,
+          privacy,
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setEvents([...events, res.data.schedule]);
+      setNewEvent("");
+    } catch (err) {
+      console.error("Error adding schedule:", err);
+      alert(err.response?.data?.message || "Failed to save event.");
+    }
   };
+  // --- END MERGED
+
+  // --- MERGED: Delete event
+  const handleDeleteEvent = async (id) => {
+    try {
+      await api.delete(`/schedules/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setEvents(events.filter((e) => e._id !== id));
+    } catch (err) {
+      console.error("Error deleting schedule:", err);
+      alert(err.response?.data?.message || "Failed to delete event.");
+    }
+  };
+  // --- END MERGED
+
 
   // ✅ Create new case
   const handleCreateCase = async () => {
@@ -110,29 +161,27 @@ export default function PoliceDashboard() {
   };
 
   // ✅ Change status locally + backend
-  // inside PoliceDashboard.jsx
+  const handleStatusChange = async (newStatus) => {
+    try {
+      const encoded = encodeURIComponent(activeCase.caseNum); // <-- important
+      const res = await api.patch(
+        `/cases/${encoded}`,
+        { status: newStatus },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
 
-const handleStatusChange = async (newStatus) => {
-  try {
-    const encoded = encodeURIComponent(activeCase.caseNum); // <-- important
-    const res = await api.patch(
-      `/cases/${encoded}`,
-      { status: newStatus },
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-
-    setActiveCase({ ...activeCase, status: newStatus });
-    setCases((prev) =>
-      prev.map((c) =>
-        c.caseNum === activeCase.caseNum ? { ...c, status: newStatus } : c
-      )
-    );
-    alert(`✅ Status changed to ${newStatus}`);
-  } catch (err) {
-    console.error("Error changing status:", err);
-    alert(err.response?.data?.message || "Failed to change status.");
-  }
-};
+      setActiveCase({ ...activeCase, status: newStatus });
+      setCases((prev) =>
+        prev.map((c) =>
+          c.caseNum === activeCase.caseNum ? { ...c, status: newStatus } : c
+        )
+      );
+      alert(`✅ Status changed to ${newStatus}`);
+    } catch (err) {
+      console.error("Error changing status:", err);
+      alert(err.response?.data?.message || "Failed to change status.");
+    }
+  };
 
 
   // ✅ Get color for status
@@ -148,6 +197,12 @@ const handleStatusChange = async (newStatus) => {
         return "#999";
     }
   };
+  
+  // --- MERGED: Filter events for selected day
+  const dailyEvents = events.filter(
+    (ev) => new Date(ev.date).toDateString() === selectedDate.toDateString()
+  );
+  // --- END MERGED
 
   return (
     <div style={{ minHeight: "100vh", background: "#F4F6F9" }}>
@@ -184,7 +239,7 @@ const handleStatusChange = async (newStatus) => {
 
       {/* MAIN */}
       <div style={{ display: "flex" }}>
-        {/* LEFT PANEL */}
+        {/* LEFT PANEL (Calendar & Events) */}
         <div
           style={{
             width: "340px",
@@ -198,10 +253,42 @@ const handleStatusChange = async (newStatus) => {
             Events on {selectedDate.toDateString()}
           </h3>
 
-          {events[selectedDate.toDateString()]?.length ? (
+          {/* --- MODIFIED: Display Merged/Backend Events --- */}
+          {dailyEvents.length ? (
             <ul>
-              {events[selectedDate.toDateString()].map((ev, idx) => (
-                <li key={idx}>✅ {ev}</li>
+              {dailyEvents.map((ev) => (
+                <li 
+                    key={ev._id}
+                    style={{
+                        marginBottom: "8px",
+                        background: ev.privacy === "private" ? "#eee" : "#d7f9d7",
+                        padding: "6px 8px",
+                        borderRadius: "6px",
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                    }}
+                >
+                    <span>{ev.title}</span>
+                    <div>
+                        <span style={{ fontSize: "12px", color: ev.privacy === "private" ? "gray" : "green", marginRight: "10px" }}>
+                            {ev.privacy}
+                        </span>
+                        <button
+                            onClick={() => handleDeleteEvent(ev._id)}
+                            style={{
+                                background: "red",
+                                color: "white",
+                                border: "none",
+                                borderRadius: "4px",
+                                padding: "4px 8px",
+                                cursor: "pointer",
+                            }}
+                        >
+                            X
+                        </button>
+                    </div>
+                </li>
               ))}
             </ul>
           ) : (
@@ -221,8 +308,31 @@ const handleStatusChange = async (newStatus) => {
               border: "1px solid #ccc",
             }}
           />
+          {/* --- MERGED: Privacy Radio Buttons --- */}
+          <div style={{ marginTop: "10px" }}>
+            <label>
+              <input
+                type="radio"
+                value="private"
+                checked={privacy === "private"}
+                onChange={(e) => setPrivacy(e.target.value)}
+              />{" "}
+              Private
+            </label>
+            <label style={{ marginLeft: "10px" }}>
+              <input
+                type="radio"
+                value="public"
+                checked={privacy === "public"}
+                onChange={(e) => setPrivacy(e.target.value)}
+              />{" "}
+              Public
+            </label>
+          </div>
+          {/* --- END MERGED --- */}
+
           <button
-            onClick={handleAddEvent}
+            onClick={handleAddEvent} // Calls the new backend handler
             style={{
               width: "100%",
               marginTop: "10px",
@@ -239,7 +349,7 @@ const handleStatusChange = async (newStatus) => {
           </button>
         </div>
 
-        {/* RIGHT PANEL */}
+        {/* RIGHT PANEL (Cases/Details/Create) */}
         <div style={{ flex: 1, padding: "25px" }}>
           {/* CASES LIST */}
           {view === "cases" && (
@@ -328,7 +438,7 @@ const handleStatusChange = async (newStatus) => {
               </p>
               <p>{activeCase.description}</p>
 
-              {/* ✅ Status change buttons */}
+              {/* Status change buttons */}
               <div style={{ marginTop: "15px", marginBottom: "20px" }}>
                 <button
                   onClick={() => handleStatusChange("aborted")}
