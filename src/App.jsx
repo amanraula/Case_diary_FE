@@ -7,7 +7,7 @@ import CitizenDashboard from "./pages/CitizenDashboard"
 import TwoFactorSetup from "./pages/TwoFactorSetup"
 import CaseRecommendations from "./pages/CaseRecommendations"
 import TwoFactorLogin from "./pages/TwoFactorLogin"
-
+import Analytics from "./pages/Analytics"
 function App() {
   return (
     <BrowserRouter>
@@ -20,6 +20,7 @@ function App() {
         <Route path="/2fa-setup" element={<TwoFactorSetup />} />
         <Route path="/2fa-login" element={<TwoFactorLogin />} />
         <Route path="/cases/recommend/:caseNum" element={<CaseRecommendations />} />
+        <Route path="/analytics" element={<Analytics />} />
       </Routes>
     </BrowserRouter>
   )
