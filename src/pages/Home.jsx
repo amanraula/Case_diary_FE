@@ -144,7 +144,7 @@ export default function Home() {
                 marginBottom: "12px",
               }}
             >
-              {"[']OFFICER{']"}
+              {"[OFFICER]"}
             </div>
             <h3
               style={{
@@ -239,35 +239,7 @@ export default function Home() {
             animation: isLoaded ? "slideInUp 0.8s ease-out 0.3s both" : "none",
           }}
         >
-          <button
-            onClick={() => navigate("/achievements")}
-            style={{
-              flex: 1,
-              padding: "14px",
-              background: "rgba(100, 50, 255, 0.15)",
-              border: "1px solid rgba(100, 50, 255, 0.3)",
-              borderRadius: "4px",
-              color: "#a0a0c0",
-              cursor: "pointer",
-              fontSize: "13px",
-              fontWeight: "600",
-              letterSpacing: "0.5px",
-              textTransform: "uppercase",
-              transition: "all 0.3s ease",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = "rgba(100, 50, 255, 0.3)"
-              e.currentTarget.style.borderColor = "rgba(100, 200, 255, 0.6)"
-              e.currentTarget.style.color = "#64c8ff"
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = "rgba(100, 50, 255, 0.15)"
-              e.currentTarget.style.borderColor = "rgba(100, 50, 255, 0.3)"
-              e.currentTarget.style.color = "#a0a0c0"
-            }}
-          >
-            View Statistics
-          </button>
+         
           <button
             onClick={() => navigate("/analytics")}
             style={{
